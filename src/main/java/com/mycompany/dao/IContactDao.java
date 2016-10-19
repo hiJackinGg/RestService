@@ -8,7 +8,4 @@ import java.util.List;
 public interface IContactDao {
 
     public List<Contact> getContacts();
-
-    public List<Contact> getContacts(int offset, int fetch);
-
 }

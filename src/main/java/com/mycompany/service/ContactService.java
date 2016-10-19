@@ -1,5 +1,8 @@
 package com.mycompany.service;
 import java.util.*;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 import com.mycompany.dao.ContactDao;
 import com.mycompany.model.Contact;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,9 +36,13 @@ public class ContactService implements IContactService{
         int from = i * valCount;
         int to = (i == threadCount - 1) ? l1.size() : from + valCount;
 
-        for (Contact c : l1.subList(from, to)){
+        Pattern pattern = Pattern.compile(regex);
+        Matcher matcher = null;
 
-            if (c.getName().matches(regex) == false) {
+        for (Contact c : l1.subList(from, to)){
+            matcher = pattern.matcher(c.getName());
+
+            if (matcher.matches() == false) {
                 l2.add(c);
             }
 
@@ -70,23 +77,4 @@ public class ContactService implements IContactService{
 
         return filteredContacts;
     }
-
-    /**
-     * Execute list filtering in a single thread.
-     * @param l1 list to be filtered.
-     * @param regex
-     * @return the same List without elements which are not match regex.
-     */
-    private List<Contact> executeInSingleThread(List<Contact> l1, String regex) {
-
-        Iterator<Contact> it = l1.iterator();
-        while (it.hasNext()) {
-            Contact c = it.next();
-            if (c.getName().matches(regex) == false)
-                it.remove();
-        }
-
-        return  l1;
-    }
-
 }

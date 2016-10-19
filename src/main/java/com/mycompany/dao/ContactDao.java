@@ -42,36 +42,5 @@ public class ContactDao implements IContactDao {
 
         return contacts;
     }
-
-    /**
-     * Can be used to reduce memory consumption.
-     * @param offset
-     * @param fetch
-     * @return
-     */
-    @Override
-    public List<Contact> getContacts(int offset, int fetch){
-        List<Contact> contacts = new ArrayList<>(fetch);
-        String sql = "SELECT * FROM Contacts ORDER BY id OFFSET ("+offset+") ROWS FETCH NEXT " + fetch + " ROWS ONLY";
-        try(Connection conn = dataSource.getConnection()){
-            try(Statement stmt = conn.createStatement()) {
-                try (ResultSet rs = stmt.executeQuery(sql)) {
-
-                    while (rs.next()) {
-                        int id = rs.getInt("id");
-                        String name = rs.getString("name");
-
-                        contacts.add(new Contact(id, name));
-                    }
-                }
-            }
-        }catch(Exception e){
-            e.printStackTrace();
-        }
-
-        return contacts;
-
-    }
-
 }
 

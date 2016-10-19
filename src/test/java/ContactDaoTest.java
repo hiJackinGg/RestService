@@ -39,27 +39,4 @@ public class ContactDaoTest {
         assertEquals(expectedContacts, actualContacts);
 
     }
-
-    @Test
-    public  void getContactsWithPagingTest(){
-
-        List<Contact> contactsBuffer = null;
-        List<Contact> actualContacts = new LinkedList<>();
-
-        int offset = 0;
-        int fetch = 5;
-
-        while((contactsBuffer = contactDao.getContacts(offset, fetch)).size() != 0){
-
-            offset+=fetch;
-            actualContacts.addAll(contactsBuffer);
-            contactsBuffer.clear();
-        }
-
-        assertEquals(expectedContacts, actualContacts);
-
-        System.out.println(actualContacts);
-
-    }
-
 }
