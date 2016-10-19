@@ -34,7 +34,7 @@ public class ContactServiceTest {
             }
         };
 
-        Collection<Contact> actualContacts = contactService.getContacts(regex);
+        Collection<Contact> actualContacts = contactService.getFilteredContacts(regex);
 
         assertEquals(expectedSize, actualContacts.size());
 

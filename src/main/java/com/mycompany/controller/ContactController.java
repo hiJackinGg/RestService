@@ -34,7 +34,7 @@ public class ContactController {
                 return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
             }
 
-            contacts = contactService.getContacts(nameFilter);
+            contacts = contactService.getFilteredContacts(nameFilter);
 
             for (Contact c : contacts) {
                 jsonArray.add(c.toJSON());

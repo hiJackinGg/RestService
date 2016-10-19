@@ -19,7 +19,7 @@ import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
 public class ControllerTest {
-    private final Set<Contact> contacts = new HashSet<>();
+    private final List<Contact> contacts = new LinkedList<>();
 
     @Mock
     private IContactService contactService;
@@ -44,7 +44,7 @@ public class ControllerTest {
     @Test
     public void test200okWithJsonResponse() throws Exception {
 
-        when(contactService.getContacts("asd")).thenReturn(contacts);
+        when(contactService.getFilteredContacts("asd")).thenReturn(contacts);
 
         String jsonResponse = "{\"contacts\":[" +
                                     "{\"name\":\"Contact1\",\"id\":1}," +

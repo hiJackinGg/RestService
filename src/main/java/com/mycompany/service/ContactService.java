@@ -1,80 +1,53 @@
 package com.mycompany.service;
-import java.util.*;
+
+import com.mycompany.model.Contact;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Repository;
+import javax.sql.DataSource;
+import java.sql.Connection;
+import java.sql.*;
+import java.util.Collection;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import com.mycompany.dao.ContactDao;
-import com.mycompany.model.Contact;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-
-@Service
-public class ContactService implements IContactService{
+@Repository()
+public class ContactService implements IContactService  {
 
     @Autowired
-    ContactDao contactDao;
-
+    private DataSource dataSource;
 
     @Override
-    public Collection<Contact> getContacts(String regex){
-        List<Contact> contacts = null;
-        Collection<Contact> filteredContacts = null;
-
-        contacts = contactDao.getContacts();
-
-        try {
-            filteredContacts = executeConcurrent(contacts, regex);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-
-        return filteredContacts;
-    }
-
-    private void execute(final List<Contact> l1, final Set<Contact> l2, final String regex,
-                         final int i, final int valCount, final int threadCount ){
-        int from = i * valCount;
-        int to = (i == threadCount - 1) ? l1.size() : from + valCount;
+    public Collection<Contact> getFilteredContacts(String regex){
+        List<Contact> contacts = new LinkedList<>();
 
         Pattern pattern = Pattern.compile(regex);
         Matcher matcher = null;
 
-        for (Contact c : l1.subList(from, to)){
-            matcher = pattern.matcher(c.getName());
+        //будем вытаскивать из базы и хранить в пямяти только окола 1000 строк
+        //(при каждом обращении к базе перезаполняется буффер для хранения 1000 строк)
+        int fetchSize = 1000; //тоесть, учитывая размер строки, для данного запроса в памяти будет всегда занято только 66кб
+        try(Connection conn = dataSource.getConnection()){
+            conn.setAutoCommit(false);
+            try(Statement stmt = conn.createStatement()) {
+                stmt.setFetchSize(fetchSize);
+                String sql = "SELECT * FROM Contacts";
+                try (ResultSet rs = stmt.executeQuery(sql)) {
+                    while (rs.next()) {
+                        int id = rs.getInt("id");
+                        String name = rs.getString("name");
 
-            if (matcher.matches() == false) {
-                l2.add(c);
+                        if (pattern.matcher(name).matches() == false)
+                            contacts.add(new Contact(id, name));
+                    }
+                }
             }
-
-        }
-    }
-
-    /**
-     * Executes list filtering in several threads (a thread per processor).
-     * List is divided into parts(almost even) among all threads.
-     * @param contacts
-     * @param regex
-     * @return
-     * @throws InterruptedException
-     */
-    private Set<Contact> executeConcurrent(final List<Contact> contacts, final String regex) throws InterruptedException {
-        Set<Contact> filteredContacts = Collections.synchronizedSet(new HashSet<>());
-        final int threadsCount = Runtime.getRuntime().availableProcessors();
-        final int valuesPerThread = contacts.size() / threadsCount;
-
-        final List<Thread> threads = new ArrayList<>(threadsCount);
-        for (int i = 0; i < threadsCount; i++) {
-            final int threadNumber = i;
-            Thread thread = new Thread(() -> execute(contacts, filteredContacts, regex,
-                    threadNumber, valuesPerThread, threadsCount));
-            thread.start();
-            threads.add(thread);
+        }catch(Exception e){
+            e.printStackTrace();
         }
 
-        for (Thread thread : threads) {
-            thread.join();
-        }
-
-        return filteredContacts;
+        return contacts;
     }
 }
+
