@@ -10,6 +10,7 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 
 import java.util.*;
+import java.util.regex.PatternSyntaxException;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = "/spring-servlet.xml")
@@ -24,23 +25,34 @@ public class ContactServiceTest {
         String regex = "^.*[23].*$";
 
         final int expectedSize = 4;
-        Set<String> expectedContactNames = new HashSet<String>(){
-            {
-                for (int i = 1; i <= expectedSize; i++){
+        List<Contact> expectedContactNames = new ArrayList<Contact>(expectedSize);
+        expectedContactNames.add(new Contact(1, "Contact1"));
+        expectedContactNames.add(new Contact(4, "Contact1"));
+        expectedContactNames.add(new Contact(7, "Contact1"));
+        expectedContactNames.add(new Contact(10, "Contact1"));
 
-                    add("Contact1");
 
-                }
-            }
-        };
+        List<Contact> actualContacts = contactService.getFilteredContacts(regex);
+        assertTrue(expectedContactNames.equals(actualContacts));
+    }
 
+    @Test(expected = PatternSyntaxException.class)
+    public  void getContactsTest2(){
+
+        String regex = ")))";
+        contactService.getFilteredContacts(regex);
+
+    }
+
+    @Test
+    public  void getContactsTest3(){
+
+        String regex = "^.*[123].*$";
+
+        int expectedSize = 0;
         Collection<Contact> actualContacts = contactService.getFilteredContacts(regex);
 
         assertEquals(expectedSize, actualContacts.size());
-
-        for (Contact c : actualContacts)
-                assertTrue(expectedContactNames.contains(c.getName()));
-
     }
 
 }

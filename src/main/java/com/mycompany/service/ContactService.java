@@ -19,7 +19,7 @@ public class ContactService implements IContactService  {
     private DataSource dataSource;
 
     @Override
-    public Collection<Contact> getFilteredContacts(String regex){
+    public List<Contact> getFilteredContacts(String regex){
         List<Contact> contacts = new LinkedList<>();
 
         Pattern pattern = Pattern.compile(regex);
@@ -35,11 +35,12 @@ public class ContactService implements IContactService  {
                 String sql = "SELECT * FROM Contacts";
                 try (ResultSet rs = stmt.executeQuery(sql)) {
                     while (rs.next()) {
-                        int id = rs.getInt("id");
                         String name = rs.getString("name");
 
-                        if (pattern.matcher(name).matches() == false)
+                        if (pattern.matcher(name).matches() == false) {
+                            int id = rs.getInt("id");
                             contacts.add(new Contact(id, name));
+                        }
                     }
                 }
             }

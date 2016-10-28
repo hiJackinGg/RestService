@@ -8,5 +8,5 @@ import java.util.List;
 
 public interface IContactService {
 
-    public Collection<Contact> getFilteredContacts(String regex);
+    public List<Contact> getFilteredContacts(String regex);
 }
