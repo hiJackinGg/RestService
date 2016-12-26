@@ -6,8 +6,8 @@ You can run project via maven command: mvn jetty:run. Then access URI. Example: 
 
 (To compile and run project you need Maven and Java8.)
 
-Есть таблица contacts в SQL базе. В ней миллионы строк.
-Данный REST сервис hello с ресурсом
+Есть таблица contacts в SQL базе. В ней миллионы строк.<br>
+Есть REST сервис hello с ресурсом
 /hello/contacts?nameFilter=val
 
 Запрос к contacts возвращает контакты из таблицы БД contacts. Параметр nameFilter обязателен. В него передаётся регулярное выражение. В возвращаемых данных нет записей, в которых contacts.name совпадает с регулярным выражением.
