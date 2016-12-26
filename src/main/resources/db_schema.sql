@@ -1,4 +1,4 @@
 create table if not exists contacts (
-    id bigserial primary key,
+    id bigint AUTO_INCREMENT primary key,
     name varchar(30) not null
 );

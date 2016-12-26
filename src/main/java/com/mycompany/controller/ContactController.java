@@ -12,7 +12,6 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import java.util.Collection;
-import java.util.List;
 import java.util.regex.Pattern;
 import java.util.regex.PatternSyntaxException;
 
@@ -25,7 +24,7 @@ public class ContactController {
     @RequestMapping(value = "/contacts", method = RequestMethod.GET, produces="application/json")
     public ResponseEntity getFilteredContacts(@RequestParam String nameFilter) {
 
-        List<Contact> contacts = null;
+        Collection<Contact> contacts = null;
         JSONObject jsonObject = new JSONObject();
         JSONArray jsonArray = new JSONArray();
 
@@ -35,7 +34,7 @@ public class ContactController {
                 return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
             }
 
-            contacts = contactService.getFilteredContacts(nameFilter);
+            contacts = contactService.getContacts(nameFilter);
 
             for (Contact c : contacts) {
                 jsonArray.add(c.toJSON());
