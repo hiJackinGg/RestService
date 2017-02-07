@@ -19,6 +19,9 @@ public class ContactServiceTest {
     @Autowired
     IContactService contactService;
 
+    /**
+     * Must retrieve contacts which don't include titles with "1" and "2" chars.
+     */
     @Test
     public  void getContactsTest(){
 
@@ -26,7 +29,8 @@ public class ContactServiceTest {
 
         final int expectedSize = 4;
 
-        Set<Contact> expectedContactNames = new HashSet<>(expectedSize);
+        //prepared data (see db_test_data.sql)
+        Collection<Contact> expectedContactNames = new HashSet<>(expectedSize);
         expectedContactNames.add(new Contact(1, "Contact1"));
         expectedContactNames.add(new Contact(4, "Contact1"));
         expectedContactNames.add(new Contact(7, "Contact1"));
@@ -37,6 +41,9 @@ public class ContactServiceTest {
 
     }
 
+    /**
+     * Regex must not be matched at all, so retrieved contacts size must be 0.
+     */
     @Test
     public  void getContactsTest3(){
 

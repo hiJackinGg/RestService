@@ -22,7 +22,7 @@ public class ContactController {
     IContactService contactService;
 
     @RequestMapping(value = "/contacts", method = RequestMethod.GET, produces="application/json")
-    public ResponseEntity getFilteredContacts(@RequestParam String nameFilter) {
+    public ResponseEntity<String> getFilteredContacts(@RequestParam String nameFilter) {
 
         Collection<Contact> contacts = null;
         JSONObject jsonObject = new JSONObject();

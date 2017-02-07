@@ -18,6 +18,7 @@ public class ContactDaoTest {
     @Autowired
     IContactDao contactDao;
 
+    //all prepared data (see db_test_data.sql)
     final List<Contact> expectedContacts = new LinkedList<Contact>(){
         {
             for (int i = 1, j = 1; i < 13; i++, j++){
@@ -25,12 +26,13 @@ public class ContactDaoTest {
                 if (j == 4) j = 1;
 
                 add(new Contact(i, "Contact"+j));
-
-
             }
         }
     };
 
+    /**
+     * Retrieved all contacts must be equal to prepared data.
+     */
     @Test
     public  void getContactsTest(){
 
@@ -40,6 +42,10 @@ public class ContactDaoTest {
 
     }
 
+    /**
+     * Retrieves all contacts with paging.
+     * Retrieved contacts must be equal to prepared data.
+     */
     @Test
     public  void getContactsWithPagingTest(){
 

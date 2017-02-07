@@ -35,6 +35,7 @@ public class Contact {
         this.name = name;
     }
 
+    //uses simple JSON library to convert object to JSON
     public JSONObject toJSON() {
         JSONObject result = new JSONObject();
         result.put("id", id);
